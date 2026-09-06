@@ -3,20 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="GameVault, l'inventaire personnel de tous les jeux vidéo auxquels vous avez joué.">
-  <title>GameVault // Mon inventaire gaming</title>
+  <meta name="description" content="Pixel Memories, l'inventaire personnel de tous les jeux vidéo auxquels vous avez joué.">
+  <title>Pixel Memories // Mon inventaire gaming</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="enhancements.css">
+  <link rel="stylesheet" href="vault.css">
+  <link rel="icon" href="assets/pixel-memories.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#080814">
 </head>
 <body>
   <div class="scanlines" aria-hidden="true"></div>
   <header class="topbar">
-    <a class="brand" href="#top" aria-label="GameVault accueil">
-      <span class="brand-mark">GV</span>
-      <span><strong>GAMEVAULT</strong><small>// PERSONAL GAME ARCHIVE</small></span>
+    <a class="brand" href="#top" aria-label="Pixel Memories accueil">
+      <span class="brand-mark">PM</span>
+      <span><strong>PIXEL MEMORIES</strong><small>// PERSONAL GAME ARCHIVE</small></span>
     </a>
     <div id="syncStatus" class="top-status"><span class="status-dot"></span> CONNEXION REQUISE</div>
   </header>
@@ -25,7 +28,7 @@
     <aside class="sidebar">
       <section class="profile-card hud-panel">
         <span class="eyebrow">PLAYER PROFILE</span>
-        <h1>AURORE<span>VEY</span></h1>
+        <h1>PLAYER<span> ONE</span></h1>
         <p>Inventaire personnel</p>
         <div class="level-line"><span>NIVEAU DE COLLECTION</span><b id="completionPercent">0%</b></div>
         <div class="progress"><span id="completionBar"></span></div>
@@ -48,11 +51,11 @@
     <section class="content">
       <section class="hero hud-panel">
         <div>
-          <span class="eyebrow">DATABASE / ALL TITLES</span>
+          <span class="eyebrow">YOUR LIFE. YOUR GAMES.</span>
           <h2>Ma bibliothèque,<br><em>mon histoire.</em></h2>
-          <p>Explore les jeux, coche ceux qui ont marqué ton parcours et garde une trace de chaque univers traversé.</p>
+          <p>Explore les jeux, coche ceux qui ont marqué ton parcours et garde une trace de chaque univers traversé.</p><a class="button button-primary hero-cta" href="#catalogue">Explorer mes souvenirs ↗</a>
         </div>
-        <div class="hero-orbit" aria-hidden="true"><span>◈</span></div>
+        <div class="hero-coordinate" aria-hidden="true">PM / MEMORY DISTRICT<br>ARCHIVE YOUR UNIVERSE — 01</div>
       </section>
 
       <section id="stats" class="stats-grid" aria-label="Statistiques de l'inventaire">
@@ -70,7 +73,7 @@
         <div id="importProgress" class="import-progress" hidden><span id="importProgressBar"></span></div>
 
         <form id="filters" class="filters hud-panel">
-          <label class="search-field"><span>⌕</span><input id="searchInput" type="search" placeholder="Rechercher un jeu..." autocomplete="off"></label>
+          <label class="search-field"><span>⌕</span><input id="searchInput" type="search" aria-label="Rechercher un jeu" placeholder="Rechercher un jeu..." autocomplete="off"></label>
           <label><span class="filter-label">GENRE</span><select id="genreFilter"><option value="all">Tous les genres</option></select></label>
           <label><span class="filter-label">PLATEFORME</span><select id="platformFilter"><option value="all">Toutes les plateformes</option></select></label>
           <label><span class="filter-label">ANNÉE</span><select id="yearFilter"><option value="all">Toutes les années</option></select></label>
@@ -78,15 +81,21 @@
           <label><span class="filter-label">TRIER PAR</span><select id="sortFilter"><option value="name-asc">Nom A → Z</option><option value="name-desc">Nom Z → A</option><option value="year-desc">Plus récents</option><option value="year-asc">Plus anciens</option><option value="rating-desc">Mieux notés</option><option value="metacritic-desc">Meilleur Metacritic</option><option value="playtime-desc">Durée la plus longue</option><option value="played-first">Joués en premier</option></select></label>
           <button id="resetFilters" class="button button-ghost" type="button">Réinitialiser</button>
         </form>
+        <div class="review-controls"><label class="seen-toggle"><input id="showSeen" type="checkbox"> Afficher jeux déjà vus</label><span id="seenCount">0 jeu examiné</span></div>
 
         <div class="catalogue-toolbar"><span id="resultSummary">0 résultat</span><div class="view-note">COCHE TES SOUVENIRS <span>●</span></div></div>
         <div id="loginGate" class="empty-state"><span>⌁</span><h3>Connexion requise</h3><p>Connecte-toi pour accéder uniquement à ton inventaire.</p><a class="button button-primary" href="#settings">Se connecter</a></div>
         <div id="gamesGrid" class="games-grid"></div>
         <div id="emptyState" class="empty-state" hidden><span>∅</span><h3>Aucun jeu trouvé</h3><p>Modifie tes filtres ou importe de nouveaux jeux.</p></div>
+        <section id="reviewPanel" class="review-panel" hidden aria-label="Valider la page">
+          <div><span class="eyebrow">CHECKPOINT / PROGRESSION</span><h3>Cette page n’a plus de secrets ?</h3><p>Marque ces jeux comme vus. Tes choix « J’ai joué » restent inchangés.</p></div>
+          <button id="markSeen" class="button mark-seen" type="button">✓ Noter comme vu</button>
+          <p id="reviewMessage" role="status" aria-live="polite"></p>
+        </section>
         <nav id="pagination" class="pagination" aria-label="Pagination du catalogue" hidden>
           <button id="previousPage" class="button button-ghost" type="button">← Précédente</button>
           <span id="pageInfo">Page 1 / 1</span>
-          <label>Par page <select id="pageSize"><option value="24">24</option><option value="48">48</option><option value="96">96</option></select></label>
+          <span class="page-size-note">30 jeux par page</span>
           <button id="nextPage" class="button button-ghost" type="button">Suivante →</button>
         </nav>
       </section>
@@ -111,7 +120,7 @@
     <button id="closeModal" class="modal-close" type="button" aria-label="Fermer">×</button>
     <div id="modalContent"></div>
   </dialog>
-  <footer><span>GAMEVAULT v2.1</span><span>FIREBASE CLOUD SAVE // <a href="https://rawg.io/" target="_blank" rel="noreferrer">DATA &amp; IMAGES BY RAWG</a></span></footer>
+  <footer><span>PIXEL MEMORIES v3.0</span><span>FIREBASE CLOUD SAVE // <a href="https://rawg.io/" target="_blank" rel="noreferrer">DATA &amp; IMAGES BY RAWG</a></span></footer>
   <script type="module" src="main.js"></script>
 </body>
 </html>
