@@ -67,6 +67,7 @@
           <button id="refreshButton" class="button button-primary" type="button"><span>↻</span> Importer plus de jeux</button>
         </div>
         <div id="updateMessage" class="update-message" role="status" aria-live="polite"></div>
+        <div id="importProgress" class="import-progress" hidden><span id="importProgressBar"></span></div>
 
         <form id="filters" class="filters hud-panel">
           <label class="search-field"><span>⌕</span><input id="searchInput" type="search" placeholder="Rechercher un jeu..." autocomplete="off"></label>
@@ -74,6 +75,7 @@
           <label><span class="filter-label">PLATEFORME</span><select id="platformFilter"><option value="all">Toutes les plateformes</option></select></label>
           <label><span class="filter-label">ANNÉE</span><select id="yearFilter"><option value="all">Toutes les années</option></select></label>
           <label><span class="filter-label">STATUT</span><select id="statusFilter"><option value="all">Tous les statuts</option><option value="played">Joués</option><option value="unplayed">À jouer</option></select></label>
+          <label><span class="filter-label">TRIER PAR</span><select id="sortFilter"><option value="name-asc">Nom A → Z</option><option value="name-desc">Nom Z → A</option><option value="year-desc">Plus récents</option><option value="year-asc">Plus anciens</option><option value="rating-desc">Mieux notés</option><option value="metacritic-desc">Meilleur Metacritic</option><option value="playtime-desc">Durée la plus longue</option><option value="played-first">Joués en premier</option></select></label>
           <button id="resetFilters" class="button button-ghost" type="button">Réinitialiser</button>
         </form>
 
@@ -105,7 +107,11 @@
       </section>
     </section>
   </main>
-  <footer><span>GAMEVAULT v2.0</span><span>FIREBASE CLOUD SAVE // PRIVATE USER VAULT</span></footer>
+  <dialog id="gameModal" class="game-modal">
+    <button id="closeModal" class="modal-close" type="button" aria-label="Fermer">×</button>
+    <div id="modalContent"></div>
+  </dialog>
+  <footer><span>GAMEVAULT v2.1</span><span>FIREBASE CLOUD SAVE // <a href="https://rawg.io/" target="_blank" rel="noreferrer">DATA &amp; IMAGES BY RAWG</a></span></footer>
   <script type="module" src="main.js"></script>
 </body>
 </html>
