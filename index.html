@@ -82,12 +82,23 @@
       </section>
 
       <section id="settings" class="settings hud-panel">
+        <div class="auth-form">
+          <span class="eyebrow">CLOUD SAVE</span>
+          <h2>Mon compte</h2>
+          <p id="authStatus">Non connecté — tes coches restent locales pour le moment.</p>
+          <label for="authEmail">Adresse courriel</label>
+          <input id="authEmail" type="email" placeholder="ton@email.com" autocomplete="email">
+          <label for="authPassword">Mot de passe</label>
+          <input id="authPassword" type="password" placeholder="Au moins 6 caractères" autocomplete="current-password">
+          <div class="api-input-row"><button id="signInButton" class="button button-secondary" type="button">Se connecter</button><button id="signUpButton" class="button button-ghost" type="button">Créer un compte</button></div>
+          <button id="signOutButton" class="button button-ghost" type="button" hidden>Se déconnecter</button>
+        </div>
         <div><span class="eyebrow">OPTIONAL CONNECTION</span><h2>Source de données</h2><p>GameVault fonctionne en mode démo sans clé. Pour charger les jeux RAWG, colle ta clé ci-dessous. Elle reste uniquement dans ton navigateur.</p></div>
-        <div class="api-form"><label for="rawgKey">Clé API RAWG</label><div class="api-input-row"><input id="rawgKey" type="password" placeholder="Colle ta clé ici"><button id="saveKey" class="button button-secondary" type="button">Enregistrer</button></div><a href="https://rawg.io/apidocs" target="_blank" rel="noreferrer">Obtenir une clé RAWG ↗</a></div>
+        <div class="api-form"><label for="rawgKey">Clé API RAWG</label><div class="api-input-row"><input id="rawgKey" type="password" placeholder="Colle ta clé ici"><button id="saveKey" class="button button-secondary" type="button">Enregistrer</button></div><p id="keyStatus" class="key-status" role="status" aria-live="polite"></p><a href="https://rawg.io/apidocs" target="_blank" rel="noreferrer">Obtenir une clé RAWG ↗</a></div>
       </section>
     </section>
   </main>
   <footer><span>GAMEVAULT v1.0</span><span>LOCAL STORAGE // YOUR DATA STAYS YOURS</span></footer>
-  <script src="main.js"></script>
+  <script type="module" src="main.js"></script>
 </body>
 </html>
