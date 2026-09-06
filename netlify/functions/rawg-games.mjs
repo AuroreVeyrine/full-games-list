@@ -25,9 +25,19 @@ export default async (request) => {
   try {
     const response = await fetch(rawgUrl);
     const data = await response.json();
-    if (!response.ok) return json({ error: 'RAWG request failed', details: data }, response.status);
-    return json(data);
+    if (!response.ok) return json({ error: 'RAWG request failed' }, response.status);
+    if (gameId) return json(data);
+    return json({ count: data.count, next: Boolean(data.next), previous: Boolean(data.previous), results: data.results || [] });
   } catch {
     return json({ error: 'RAWG is temporarily unavailable.' }, 502);
+  }
+};
+
+export const config = {
+  path: '/api/rawg',
+  rateLimit: {
+    windowLimit: 360,
+    windowSize: 60,
+    aggregateBy: ['ip', 'domain']
   }
 };
