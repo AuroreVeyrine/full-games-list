@@ -22,7 +22,7 @@ const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
 }),{threshold:.06});
 const watched=new WeakSet();
 function reveal(){
-  document.querySelectorAll('.game-card,.journey-card,.journey-section>h2,.account-panel,.portal-section>h2').forEach(el=>{
+  document.querySelectorAll('.game-card,.account-panel').forEach(el=>{
     if(watched.has(el))return;watched.add(el);
     if(!off()){el.classList.add('reveal-pending');observer.observe(el);}
   });

@@ -1,0 +1,40 @@
+/* The image is assembled from particles, not a rotating card. */
+.home-page .memory-core{width:360px;height:360px;right:6%;top:18%;transform:none;translate:none;filter:none;perspective:none}
+.core-pixel-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.core-fallback{position:absolute;width:140px;height:140px;left:calc(50% - 70px);top:calc(50% - 70px);filter:drop-shadow(-4px 0 9px #00edff70) drop-shadow(4px 0 9px #ff58b960)}
+.pixel-ready .core-fallback{opacity:0}
+.core-spectrum{position:absolute;inset:12%;border-radius:50%;background:radial-gradient(ellipse,#74dbff1a,transparent 68%);filter:blur(18px);pointer-events:none}
+.home-page .hero{overflow:hidden}
+.home-page .hero .scene-layer{inset:-14%;will-change:transform}
+.home-page .hero>div:first-child{will-change:transform,filter;transition:none}
+.home-page .hero>div:first-child{mask-size:100% 100%;-webkit-mask-size:100% 100%}
+.home-page .hero>div:first-child:focus-within{mask-image:none!important;-webkit-mask-image:none!important;filter:none!important}
+.motion-paused .home-page .hero>div:first-child{mask-image:none!important;-webkit-mask-image:none!important}
+.home-page .orbital-horizon,.home-page .depth-grid{display:none}
+.home-page .memory-title em:after{opacity:.35;clip-path:inset(38% 0 54%);color:#f37eff;transform:translateX(3px)}
+.depth-atmosphere{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;mix-blend-mode:screen}
+.home-page .topbar{z-index:10;background:#080c15f5}.home-page .site-nav{z-index:12}
+.home-page .journey-grid{perspective:1200px;gap:30px}
+.assembly-shell{min-width:0;perspective:1000px;position:relative}
+.assembly-shell>.journey-card{mask-size:100% 100%;-webkit-mask-size:100% 100%}
+.assembly-shell>.journey-card:focus-within{mask-image:none!important;-webkit-mask-image:none!important;opacity:1!important;filter:none!important}
+.assembly-shell>.journey-card{height:100%;transform-origin:50% 50%;will-change:transform,opacity,filter;transition:none;background:linear-gradient(130deg,#12273cba,#23142faa);border:1px solid #9eeaff3d;box-shadow:-2px 0 0 #57eeff12,2px 0 0 #fa6cd512;overflow:visible}
+.assembly-shell>.journey-card:before{content:"";position:absolute;inset:-1px;pointer-events:none;background:linear-gradient(90deg,#00dfff11,transparent 22%,transparent 78%,#fa64d519);clip-path:polygon(0 0,25% 0,25% 1%,1% 1%,1% 99%,20% 99%,20% 100%,0 100%,0 0,100% 0,100% 100%,80% 100%,80% 99%,99% 99%,99% 1%,75% 1%,75% 0);filter:drop-shadow(-2px 0 2px #00eaff) drop-shadow(2px 0 2px #ff71dd)}
+.home-page .chapter-art{height:185px;transform:none;text-shadow:none;position:relative}
+.home-page .chapter-art:before,.home-page .chapter-art:after{display:none}
+.chapter-art .core-pixel-canvas{width:100%;height:100%}
+.chapter-fallback{font-size:74px;filter:drop-shadow(-3px 0 0 #5feeff70) drop-shadow(3px 0 0 #ff76cc70)}
+.pixel-ready .chapter-fallback{opacity:0}
+.home-page .journey-card h3{position:relative;text-shadow:var(--split,0px) 0 #7aefff50,calc(var(--split,0px) * -1) 0 #ff7bda50}
+.home-page .journey-card p{position:relative}
+.home-page .portal-rings{opacity:.35}
+.home-page .journey-section{position:relative;isolation:isolate}
+.home-page .journey-section:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse at 5% 35%,#04536730,transparent 45%),radial-gradient(ellipse at 95% 75%,#77216b24,transparent 45%);transform:translateY(var(--section-drift,0px));pointer-events:none}
+.motion-paused .depth-atmosphere{display:none}
+.motion-paused .assembly-shell>.journey-card,.motion-paused .home-page .hero>div:first-child{transform:none!important;filter:none!important;opacity:1!important}
+.motion-paused .core-fallback,.motion-paused .chapter-fallback{opacity:1!important}
+.motion-paused .core-pixel-canvas{display:none}
+.motion-paused .assembly-shell>.journey-card{mask-image:none!important;-webkit-mask-image:none!important}
+@media(max-width:900px){.home-page .memory-core{width:310px;height:310px;right:0;top:16%}}
+@media(max-width:600px){.home-page .memory-core{width:300px;height:260px;top:0;right:calc(50% - 150px);transform:none;transform-origin:center}.home-page .hero{padding-top:245px;min-height:760px}.home-page .hero h1.memory-title{font-size:clamp(48px,12.5vw,72px)}.home-page .journey-grid{gap:36px}.home-page .chapter-art{height:175px}.core-fallback{width:115px;height:115px;top:calc(50% - 57px);left:calc(50% - 57px)}.assembly-shell>.journey-card{overflow:hidden}.depth-atmosphere{opacity:.85}}
+@media(prefers-reduced-motion:reduce){.depth-atmosphere,.core-pixel-canvas{display:none}.core-fallback,.chapter-fallback{opacity:1!important}.assembly-shell>.journey-card{transform:none!important;filter:none!important;opacity:1!important;mask-image:none!important;-webkit-mask-image:none!important}}
