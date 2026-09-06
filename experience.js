@@ -14,17 +14,27 @@ let scroll=scrollY,velocity=0,paused=false,dirty=true;
 const pointer={x:.5,y:.5};
 const scenes=[],panels=[];
 const random=n=>{const x=Math.sin(n*78.233)*43758.5453;return x-Math.floor(x);};
-const particles=Array.from({length:mobile?48:85},(_,i)=>({
- x:random(i+1),y:random(i+19),depth:i%3,
- speed:[.12,.46,1.1][i%3],size:[1.5,4,14][i%3]*(.6+random(i+5)),
- hue:i%2?'#f77de3':'#70edff',seed:i
-}));
+// More distant grains than foreground bokeh; size controls blur and transparency.
+const particles=Array.from({length:mobile?48:85},(_,i)=>{
+ const depth=Math.pow(random(i+52),1.8);
+ return {x:random(i+1),y:random(i+19),depth,
+  speed:.07+depth*1.55,size:1.2+Math.pow(depth,2)*48,seed:i};
+}).sort((a,b)=>a.depth-b.depth);
 function sprite(color,blur){
- const c=document.createElement('canvas');c.width=c.height=64;
+ const c=document.createElement('canvas');c.width=c.height=128;
  const ctx=c.getContext('2d');ctx.fillStyle=color;ctx.filter='blur('+blur+'px)';
- ctx.fillRect(24,24,16,16);return c;
+ ctx.fillRect(48,48,32,32);return c;
 }
-const sprites=[sprite('#70edff',0),sprite('#f77de3',0),sprite('#70edff',5),sprite('#f77de3',5)];
+// Preblurred sprites: no per-particle blur/filter work in the animation loop.
+const spriteBlur=[0,.6,1.8,4,8,12];
+const sprites=spriteBlur.map(blur=>[sprite('#70edff',blur),sprite('#f77de3',blur)]);
+function paintDepthPixel(x,y,size,alpha,color=0){
+ const focus=clamp((size-2)/38);
+ const level=Math.min(5,Math.floor(focus*5));
+ bg.globalAlpha=alpha*(.5-.38*focus);
+ const extent=size*4;
+ bg.drawImage(sprites[level][color],x-extent/2,y-extent/2,extent,extent);
+}
 // Quantized masks remove real pieces of the panel; cached to avoid rebuilding SVG per frame.
 const masks=Array.from({length:16},(_,level)=>{
  if(!level)return 'none';
@@ -130,22 +140,24 @@ function drawScene(s){
 function drawAtmosphere(){
  if(!bg)return;bg.clearRect(0,0,width,height);
  for(const p of particles){
-  const x=p.x*width+Math.sin(time*.18+p.seed)*20+(pointer.x-.5)*p.depth*24;
-  const y=((p.y*(height+250)-scroll*p.speed-time*(4+p.depth*3))%(height+250)+(height+250))%(height+250)-125;
-  const stretch=1+Math.min(Math.abs(velocity)/90,.7)*p.depth;
-  bg.globalAlpha=[.3,.21,.1][p.depth];
-  const size=p.size*(p.depth===2?4:2.5);
-  bg.drawImage(sprites[(p.seed%2)+(p.depth===2?2:0)],x-size*.5,y-size*.5,size,size*stretch);
+  const parallax=p.depth*p.depth;
+  const x=p.x*width+Math.sin(time*.15+p.seed)*(3+parallax*26)+(pointer.x-.5)*parallax*90;
+  const wrap=height+450;
+  const y=((p.y*wrap-scroll*p.speed-time*(2+p.depth*11))%wrap+wrap)%wrap-225+(pointer.y-.5)*parallax*40;
+  paintDepthPixel(x,y,p.size,1,p.seed%2);
  }
- // Edge fragments are tied to each panel's actual screen position.
+ // Panel fragments use the same optics as the atmosphere, rather than flat squares.
  for(const p of panels){
   if(p.rect.bottom<0||p.rect.top>height)continue;
   const d=smooth(p.scatter);
   for(const t of p.tiles){
-   bg.globalAlpha=.6*d;bg.fillStyle=p.index%2?'#de8ff6':'#70eaff';
-   const x=p.rect.left+t.x*p.rect.width+t.dx*d;
-   const y=p.rect.top+t.y*p.rect.height+t.dy*d;
-   bg.fillRect(x,y,t.size*(.3+d),t.size*(.3+d));
+   const depth=clamp((t.size-3)/10);
+   const size=(1.5+depth*depth*38)*(.5+d*.7);
+   const drift=depth*depth;
+   const x=p.rect.left+t.x*p.rect.width+t.dx*d*(.3+drift)+(pointer.x-.5)*drift*45;
+   const y=p.rect.top+t.y*p.rect.height+t.dy*d*(.3+drift)
+     +(height*.5-(p.rect.top+p.rect.height*.5))*drift*.42;
+   paintDepthPixel(x,y,size,d,p.index%2);
   }
  }
  bg.globalAlpha=1;
