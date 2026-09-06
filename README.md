@@ -2,6 +2,15 @@
 
 Inventaire personnel de jeux vidéo avec authentification Firebase, sauvegarde privée Firestore et catalogue RAWG.
 
+## Pages et identité
+
+- `index.html` : accueil immersif, particules projetées en perspective, parallaxe au défilement et présentation.
+- `catalogue.html` : catalogue privé, filtres, pages de 30 jeux et suivi « Vu » / « Joué ».
+- `compte.html` : connexion, inscription, déconnexion et réinitialisation du mot de passe.
+- `assets/pixel-memories-symbol.svg` : logo vectoriel original, une cartouche de jeu se dispersant en pixels.
+
+La navigation mobile reste en bas de l'écran avec prise en compte de la zone système. Les animations respectent la réduction des mouvements et peuvent être suspendues. Le canvas s'arrête lorsque l'accueil n'est plus visible ou que l'onglet est masqué.
+
 ## Architecture
 
 - **Catalogue public** : importé depuis RAWG par une fonction Netlify et conservé dans IndexedDB pour supporter 10 000 jeux et plus.
