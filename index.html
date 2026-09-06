@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="enhancements.css">
 </head>
 <body>
   <div class="scanlines" aria-hidden="true"></div>
@@ -17,7 +18,7 @@
       <span class="brand-mark">GV</span>
       <span><strong>GAMEVAULT</strong><small>// PERSONAL GAME ARCHIVE</small></span>
     </a>
-    <div class="top-status"><span class="status-dot"></span> LOCAL SAVE ACTIVE</div>
+    <div id="syncStatus" class="top-status"><span class="status-dot"></span> CONNEXION REQUISE</div>
   </header>
 
   <main id="top" class="app-shell">
@@ -33,7 +34,7 @@
       <nav class="side-nav" aria-label="Navigation principale">
         <a class="active" href="#catalogue"><span>01</span> Catalogue</a>
         <a href="#stats"><span>02</span> Statistiques</a>
-        <a href="#settings"><span>03</span> Configuration API</a>
+        <a href="#settings"><span>03</span> Compte et API</a>
       </nav>
 
       <section class="legend hud-panel">
@@ -63,7 +64,7 @@
       <section id="catalogue" class="catalogue-section">
         <div class="section-heading">
           <div><span class="eyebrow">SEARCH PROTOCOL</span><h2>Catalogue des jeux</h2></div>
-          <button id="refreshButton" class="button button-primary" type="button"><span>↻</span> Mettre à jour</button>
+          <button id="refreshButton" class="button button-primary" type="button"><span>↻</span> Importer plus de jeux</button>
         </div>
         <div id="updateMessage" class="update-message" role="status" aria-live="polite"></div>
 
@@ -77,15 +78,22 @@
         </form>
 
         <div class="catalogue-toolbar"><span id="resultSummary">0 résultat</span><div class="view-note">COCHE TES SOUVENIRS <span>●</span></div></div>
+        <div id="loginGate" class="empty-state"><span>⌁</span><h3>Connexion requise</h3><p>Connecte-toi pour accéder uniquement à ton inventaire.</p><a class="button button-primary" href="#settings">Se connecter</a></div>
         <div id="gamesGrid" class="games-grid"></div>
-        <div id="emptyState" class="empty-state" hidden><span>∅</span><h3>Aucun jeu trouvé</h3><p>Modifie tes filtres ou mets à jour la base.</p></div>
+        <div id="emptyState" class="empty-state" hidden><span>∅</span><h3>Aucun jeu trouvé</h3><p>Modifie tes filtres ou importe de nouveaux jeux.</p></div>
+        <nav id="pagination" class="pagination" aria-label="Pagination du catalogue" hidden>
+          <button id="previousPage" class="button button-ghost" type="button">← Précédente</button>
+          <span id="pageInfo">Page 1 / 1</span>
+          <label>Par page <select id="pageSize"><option value="24">24</option><option value="48">48</option><option value="96">96</option></select></label>
+          <button id="nextPage" class="button button-ghost" type="button">Suivante →</button>
+        </nav>
       </section>
 
       <section id="settings" class="settings hud-panel">
         <div class="auth-form">
           <span class="eyebrow">CLOUD SAVE</span>
           <h2>Mon compte</h2>
-          <p id="authStatus">Non connecté — tes coches restent locales pour le moment.</p>
+          <p id="authStatus">Non connecté — aucun inventaire n’est affiché.</p>
           <label for="authEmail">Adresse courriel</label>
           <input id="authEmail" type="email" placeholder="ton@email.com" autocomplete="email">
           <label for="authPassword">Mot de passe</label>
@@ -93,12 +101,11 @@
           <div class="api-input-row"><button id="signInButton" class="button button-secondary" type="button">Se connecter</button><button id="signUpButton" class="button button-ghost" type="button">Créer un compte</button></div>
           <button id="signOutButton" class="button button-ghost" type="button" hidden>Se déconnecter</button>
         </div>
-        <div><span class="eyebrow">OPTIONAL CONNECTION</span><h2>Source de données</h2><p>GameVault fonctionne en mode démo sans clé. Pour charger les jeux RAWG, colle ta clé ci-dessous. Elle reste uniquement dans ton navigateur.</p></div>
-        <div class="api-form"><label for="rawgKey">Clé API RAWG</label><div class="api-input-row"><input id="rawgKey" type="password" placeholder="Colle ta clé ici"><button id="saveKey" class="button button-secondary" type="button">Enregistrer</button></div><p id="keyStatus" class="key-status" role="status" aria-live="polite"></p><a href="https://rawg.io/apidocs" target="_blank" rel="noreferrer">Obtenir une clé RAWG ↗</a></div>
+        <div class="api-form"><span class="eyebrow">SECURE DATA SOURCE</span><h2>Source de données</h2><p>La clé RAWG est maintenant lue par une fonction Netlify. Elle n’est plus enregistrée ni exposée dans ton navigateur.</p><p id="apiStatus" class="key-status" role="status" aria-live="polite">Configuration Netlify requise.</p></div>
       </section>
     </section>
   </main>
-  <footer><span>GAMEVAULT v1.0</span><span>LOCAL STORAGE // YOUR DATA STAYS YOURS</span></footer>
+  <footer><span>GAMEVAULT v2.0</span><span>FIREBASE CLOUD SAVE // PRIVATE USER VAULT</span></footer>
   <script type="module" src="main.js"></script>
 </body>
 </html>
