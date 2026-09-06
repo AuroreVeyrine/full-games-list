@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fr-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="GameVault, l'inventaire personnel de tous les jeux vidéo auxquels vous avez joué.">
+  <title>GameVault // Mon inventaire gaming</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="scanlines" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="GameVault accueil">
+      <span class="brand-mark">GV</span>
+      <span><strong>GAMEVAULT</strong><small>// PERSONAL GAME ARCHIVE</small></span>
+    </a>
+    <div class="top-status"><span class="status-dot"></span> LOCAL SAVE ACTIVE</div>
+  </header>
+
+  <main id="top" class="app-shell">
+    <aside class="sidebar">
+      <section class="profile-card hud-panel">
+        <span class="eyebrow">PLAYER PROFILE</span>
+        <h1>AURORE<span>VEY</span></h1>
+        <p>Inventaire personnel</p>
+        <div class="level-line"><span>NIVEAU DE COLLECTION</span><b id="completionPercent">0%</b></div>
+        <div class="progress"><span id="completionBar"></span></div>
+      </section>
+
+      <nav class="side-nav" aria-label="Navigation principale">
+        <a class="active" href="#catalogue"><span>01</span> Catalogue</a>
+        <a href="#stats"><span>02</span> Statistiques</a>
+        <a href="#settings"><span>03</span> Configuration API</a>
+      </nav>
+
+      <section class="legend hud-panel">
+        <span class="eyebrow">LEGEND</span>
+        <p><i class="legend-dot cyan"></i> Jeu inventorié</p>
+        <p><i class="legend-dot pink"></i> Jeu joué</p>
+        <p><i class="legend-dot muted"></i> À découvrir</p>
+      </section>
+    </aside>
+
+    <section class="content">
+      <section class="hero hud-panel">
+        <div>
+          <span class="eyebrow">DATABASE / ALL TITLES</span>
+          <h2>Ma bibliothèque,<br><em>mon histoire.</em></h2>
+          <p>Explore les jeux, coche ceux qui ont marqué ton parcours et garde une trace de chaque univers traversé.</p>
+        </div>
+        <div class="hero-orbit" aria-hidden="true"><span>◈</span></div>
+      </section>
+
+      <section id="stats" class="stats-grid" aria-label="Statistiques de l'inventaire">
+        <article class="stat-card"><span class="stat-label">JEUX JOUÉS</span><strong id="playedCount">0</strong><small>sélectionnés</small></article>
+        <article class="stat-card accent-pink"><span class="stat-label">JEUX AFFICHÉS</span><strong id="visibleCount">0</strong><small>dans cette vue</small></article>
+        <article class="stat-card accent-purple"><span class="stat-label">TOTAL CATALOGUE</span><strong id="totalCount">0</strong><small>titres chargés</small></article>
+      </section>
+
+      <section id="catalogue" class="catalogue-section">
+        <div class="section-heading">
+          <div><span class="eyebrow">SEARCH PROTOCOL</span><h2>Catalogue des jeux</h2></div>
+          <button id="refreshButton" class="button button-primary" type="button"><span>↻</span> Mettre à jour</button>
+        </div>
+        <div id="updateMessage" class="update-message" role="status" aria-live="polite"></div>
+
+        <form id="filters" class="filters hud-panel">
+          <label class="search-field"><span>⌕</span><input id="searchInput" type="search" placeholder="Rechercher un jeu..." autocomplete="off"></label>
+          <label><span class="filter-label">GENRE</span><select id="genreFilter"><option value="all">Tous les genres</option></select></label>
+          <label><span class="filter-label">PLATEFORME</span><select id="platformFilter"><option value="all">Toutes les plateformes</option></select></label>
+          <label><span class="filter-label">ANNÉE</span><select id="yearFilter"><option value="all">Toutes les années</option></select></label>
+          <label><span class="filter-label">STATUT</span><select id="statusFilter"><option value="all">Tous les statuts</option><option value="played">Joués</option><option value="unplayed">À jouer</option></select></label>
+          <button id="resetFilters" class="button button-ghost" type="button">Réinitialiser</button>
+        </form>
+
+        <div class="catalogue-toolbar"><span id="resultSummary">0 résultat</span><div class="view-note">COCHE TES SOUVENIRS <span>●</span></div></div>
+        <div id="gamesGrid" class="games-grid"></div>
+        <div id="emptyState" class="empty-state" hidden><span>∅</span><h3>Aucun jeu trouvé</h3><p>Modifie tes filtres ou mets à jour la base.</p></div>
+      </section>
+
+      <section id="settings" class="settings hud-panel">
+        <div><span class="eyebrow">OPTIONAL CONNECTION</span><h2>Source de données</h2><p>GameVault fonctionne en mode démo sans clé. Pour charger les jeux RAWG, colle ta clé ci-dessous. Elle reste uniquement dans ton navigateur.</p></div>
+        <div class="api-form"><label for="rawgKey">Clé API RAWG</label><div class="api-input-row"><input id="rawgKey" type="password" placeholder="Colle ta clé ici"><button id="saveKey" class="button button-secondary" type="button">Enregistrer</button></div><a href="https://rawg.io/apidocs" target="_blank" rel="noreferrer">Obtenir une clé RAWG ↗</a></div>
+      </section>
+    </section>
+  </main>
+  <footer><span>GAMEVAULT v1.0</span><span>LOCAL STORAGE // YOUR DATA STAYS YOURS</span></footer>
+  <script src="main.js"></script>
+</body>
+</html>
