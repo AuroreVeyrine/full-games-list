@@ -1,3 +1,4 @@
+import './circuit.js';
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let paused=false;
 try{paused=localStorage.getItem('pixel-memories-motion')==='paused';}catch{}

@@ -13,7 +13,7 @@ La navigation mobile reste en bas de l'écran avec prise en compte de la zone sy
 
 ## Architecture
 
-- **Catalogue public** : importé depuis RAWG par une fonction Netlify et conservé dans IndexedDB pour supporter 10 000 jeux et plus.
+- **Catalogue public partagé** : stocké côté serveur dans Netlify Blobs (store persistant `pixel-memories-catalogue-v1`), servi par `/api/catalogue`. IndexedDB n’est qu’un cache facultatif. Chaque compte télécharge la même liste, sans refaire l’import RAWG.
 - **Inventaire privé** : une sous-collection Firestore `users/{uid}/playedGames` par utilisateur.
 - **Clé RAWG** : variable Netlify `RAWG_API_KEY`, accessible uniquement à la fonction serveur.
 
@@ -23,7 +23,7 @@ La navigation mobile reste en bas de l'écran avec prise en compte de la zone sy
 2. Publier le contenu de `firestore.rules` dans la console Firestore.
 3. Ajouter `RAWG_API_KEY` dans **Netlify > Project configuration > Environment variables** avec la portée **Functions**, puis redéployer.
 
-Le catalogue reprend automatiquement son import à la prochaine connexion. Le bouton d'import permet d'arrêter proprement le processus; la page RAWG suivante est mémorisée.
+Le catalogue commun est chargé à la connexion. « Actualiser le catalogue » ajoute un lot depuis RAWG ; le curseur commun est conservé côté serveur. Les écritures conditionnelles empêchent deux mises à jour simultanées de remplacer une version plus récente. Les statuts privés ne transitent jamais par ce catalogue.
 
 Les données et images du catalogue sont fournies par [RAWG](https://rawg.io/).
 
@@ -33,7 +33,7 @@ Le catalogue affiche 30 jeux par page. « Noter comme vu » enregistre uniquemen
 
 Les marqueurs de lecture sont des documents `seen--{gameId}` de type `kind: "seen"` dans la même sous-collection privée que les anciens jeux joués, pour rester compatibles avec les règles Firestore déjà publiées. Ils ne contribuent jamais au compteur joué. La page est masquée uniquement après confirmation du batch Firestore. Les lectures et écritures en cours sont isolées lors d'un changement de compte.
 
-Le catalogue RAWG reste un cache local ; les statuts personnels sont dans Firestore et rechargés à la connexion. Les identifiants techniques Firebase et IndexedDB historiques sont conservés malgré le nouveau nom.
+Le catalogue RAWG est commun sur Netlify ; les statuts personnels sont dans Firestore et rechargés à la connexion. Les identifiants techniques Firebase et IndexedDB historiques sont conservés malgré le nouveau nom.
 
 ## Vérification
 
