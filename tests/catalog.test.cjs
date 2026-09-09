@@ -5,7 +5,7 @@ const vm=require('node:vm');
 function setup(){
   const elements=new Map();
   const writes=[];let rejectCommit=false;let docs=[];
-  const el=id=>{if(!elements.has(id))elements.set(id,{value:['genreFilter','platformFilter','yearFilter','statusFilter'].includes(id)?'all':id==='sortFilter'?'name-asc':'',checked:false,hidden:false,style:{},dataset:{},classList:{toggle(){}},addEventListener(){},scrollIntoView(){},close(){},textContent:'',innerHTML:''});return elements.get(id)};
+  const el=id=>{if(!elements.has(id))elements.set(id,{value:['genreFilter','platformFilter','yearFilter','statusFilter'].includes(id)?'all':id==='sortFilter'?'name-asc':'',checked:false,hidden:false,style:{},dataset:{},classList:{toggle(){}},addEventListener(){},setAttribute(name,value){this[name]=value},reset(){for(const filterId of ['genreFilter','platformFilter','yearFilter','statusFilter'])el(filterId).value='all';el('sortFilter').value='name-asc';el('searchInput').value=''},scrollIntoView(){},close(){},textContent:'',innerHTML:''});return elements.get(id)};
   const context=vm.createContext({document:{getElementById:el},initializeApp:()=>({}),getAuth:()=>({}),getFirestore:()=>({}),collection:(...a)=>a,doc:(...a)=>a,serverTimestamp:()=>123,getDocs:async()=>({docs}),writeBatch:()=>{const pending=[];return{set:(ref,data)=>pending.push({ref,data}),commit:async()=>{if(rejectCommit)throw Error('offline');writes.push(...pending)}}},setDoc:async()=>{},deleteDoc:async()=>{},URL,console,Set,Map,setTimeout});
   const source=fs.readFileSync('main.js','utf8').replace(/^import .*;\n/gm,'').replace(/initialize\(\)\.catch\(.*\);\s*$/,'');
   vm.runInContext(source,context);
@@ -13,15 +13,19 @@ function setup(){
   run("catalog=Array.from({length:65},(_,i)=>upgradeGame({id:'rawg-'+i,name:'Game '+String(i).padStart(3,'0'),year:2000,genres:['Action'],platforms:['PC']}));rebuildCatalogIndex();currentUser={uid:'alice'};inventoryReady=true;");
   return{el,run,writes,fail:()=>rejectCommit=true,docs:value=>docs=value};
 }
-test('30 games per page, last page clamp, previous/next state',()=>{
-  const h=setup();h.run('render()');assert.equal(h.run('visiblePageIds.length'),30);assert.equal(h.el('pageInfo').textContent,'Page 1 / 3');
-  h.run('currentPage=3;render()');assert.equal(h.run('visiblePageIds.length'),5);assert.equal(h.el('nextPage').disabled,true);
+test('32 games per page, last page clamp, previous/next state',()=>{
+  const h=setup();h.run('render()');assert.equal(h.run('visiblePageIds.length'),32);assert.equal(h.el('pageInfo').textContent,'Page 1 / 3');
+  h.run('currentPage=3;render()');assert.equal(h.run('visiblePageIds.length'),1);assert.equal(h.el('nextPage').disabled,true);
 });
 test('mark visible page only, preserve played, hide seen, include on demand',async()=>{
   const h=setup();h.run("played.add('rawg-0');render()");await h.run('markPageSeen()');
-  assert.equal(h.writes.length,30);assert.equal(h.writes[0].ref[2],'alice');assert.equal(h.writes[0].data.kind,'seen');
-  assert.equal(h.run('played.size'),1);assert.equal(h.run('seen.size'),30);assert.equal(h.run('visiblePageIds[0]'),'rawg-30');
+  assert.equal(h.writes.length,32);assert.equal(h.writes[0].ref[2],'alice');assert.equal(h.writes[0].data.kind,'seen');
+  assert.equal(h.run('played.size'),1);assert.equal(h.run('seen.size'),32);assert.equal(h.run('visiblePageIds[0]'),'rawg-32');
   h.el('showSeen').checked=true;h.run('render()');assert.equal(h.run('visiblePageIds[0]'),'rawg-0');assert.equal(h.el('markSeen').disabled,true);
+});
+test('played counter opens every played game, including games already seen',()=>{
+  const h=setup();h.run("played=new Set(['rawg-0','rawg-1']);seen=new Set(['rawg-0']);document.getElementById('searchInput').value='missing';showPlayedGames()");
+  assert.equal(h.el('statusFilter').value,'played');assert.equal(h.el('showSeen').checked,true);assert.equal(h.run('visiblePageIds.length'),2);assert.equal(h.el('playedGamesFilter')['aria-pressed'],'true');
 });
 test('failed batch never hides games',async()=>{
   const h=setup();h.run('render()');h.fail();await h.run('markPageSeen()');assert.equal(h.run('seen.size'),0);assert.equal(h.writes.length,0);assert.equal(h.run('reviewSaving'),false);

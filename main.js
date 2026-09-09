@@ -10,6 +10,7 @@ const STORE_NAME = 'games';
 const RAWG_PAGE_KEY = 'gamevault-rawg-next-page-v2';
 const TARGET_CATALOG_SIZE = 10000;
 const MAX_REQUESTS_PER_IMPORT = 300;
+const PAGE_SIZE = 32;
 const $ = id => document.getElementById(id);
 
 const demoGames = [
@@ -49,7 +50,17 @@ function filteredAndSortedGames(){const search=$('searchInput').value.toLowerCas
 function coverMarkup(game){return game.image?`<img class="game-cover" src="${escapeHtml(safeUrl(game.image))}" alt="Jaquette de ${escapeHtml(game.name)}" loading="lazy">`:''}
 function gameCard(game){const isPlayed=played.has(game.id);return`<article class="game-card ${isPlayed?'played':''}" data-game-id="${escapeHtml(game.id)}"><div class="game-art">${coverMarkup(game)}${seen.has(game.id)?'<span class="seen-badge">✓ VU</span>':''}<span class="platform-chip">${escapeHtml(game.platform)}</span></div><div class="game-info"><h3 class="game-title">${escapeHtml(game.name)}</h3><div class="game-meta">${escapeHtml(game.genres.slice(0,2).join(' • '))}</div><div class="game-badges">${game.rating?`<span class="game-badge">★ ${game.rating.toFixed(1)}</span>`:''}${game.metacritic?`<span class="game-badge">MC ${game.metacritic}</span>`:''}${game.playtime?`<span class="game-badge">${game.playtime} h</span>`:''}</div><button class="details-button" type="button" data-details-id="${escapeHtml(game.id)}">Voir la fiche +</button><div class="game-actions"><label class="check-label"><input type="checkbox" data-id="${escapeHtml(game.id)}" ${isPlayed?'checked':''} ${pendingPlayed.has(game.id)?'disabled':''}> J’ai joué</label><span class="game-year">${escapeHtml(game.year)}</span></div></div></article>`}
 
-function render(){const connected=Boolean(currentUser)&&inventoryReady;$('catalogue').classList.toggle('is-locked',!connected);$('loginGate').hidden=connected;if(!connected){visiblePageIds=[];$('reviewPanel').hidden=true;$('pagination').hidden=true;$('seenCount').textContent='0 jeu examiné';$('resultSummary').textContent='';$('gamesGrid').innerHTML='';['playedCount','visibleCount','totalCount'].forEach(id=>$(id).textContent='0');$('completionPercent').textContent='0%';$('completionBar').style.width='0%';return}const filtered=filteredAndSortedGames();const pageSize=30;const totalPages=Math.max(1,Math.ceil(filtered.length/pageSize));currentPage=Math.min(currentPage,totalPages);const pageGames=filtered.slice((currentPage-1)*pageSize,currentPage*pageSize);visiblePageIds=pageGames.map(game=>game.id);$('gamesGrid').innerHTML=pageGames.map(gameCard).join('');$('reviewPanel').hidden=!pageGames.length;$('markSeen').disabled=reviewSaving||pendingPlayed.size>0||!visiblePageIds.some(id=>!seen.has(id));$('markSeen').textContent=reviewSaving?'Sauvegarde…':'✓ Noter comme vu';$('seenCount').textContent=`${seen.size.toLocaleString('fr')} jeu${seen.size>1?'x':''} examiné${seen.size>1?'s':''}`;$('emptyState').hidden=filtered.length>0;$('pagination').hidden=!filtered.length;$('previousPage').disabled=currentPage===1;$('nextPage').disabled=currentPage===totalPages;$('pageInfo').textContent=`Page ${currentPage} / ${totalPages}`;$('resultSummary').textContent=`${filtered.length} résultat${filtered.length!==1?'s':''} • ${pageGames.length} affiché${pageGames.length!==1?'s':''}`;$('visibleCount').textContent=pageGames.length;$('totalCount').textContent=catalog.length;$('playedCount').textContent=played.size;const percent=catalog.length?Math.round(played.size/catalog.length*100):0;$('completionPercent').textContent=percent+'%';$('completionBar').style.width=Math.min(percent,100)+'%'}
+function render(){const connected=Boolean(currentUser)&&inventoryReady;const playedFilter=$('playedGamesFilter');$('catalogue').classList.toggle('is-locked',!connected);$('loginGate').hidden=connected;playedFilter.disabled=!connected;playedFilter.setAttribute('aria-pressed',String(connected&&$('statusFilter').value==='played'));if(!connected){visiblePageIds=[];$('reviewPanel').hidden=true;$('pagination').hidden=true;$('seenCount').textContent='0 jeu examiné';$('resultSummary').textContent='';$('gamesGrid').innerHTML='';['playedCount','visibleCount','totalCount'].forEach(id=>$(id).textContent='0');$('completionPercent').textContent='0%';$('completionBar').style.width='0%';return}const filtered=filteredAndSortedGames();const totalPages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));currentPage=Math.min(currentPage,totalPages);const pageGames=filtered.slice((currentPage-1)*PAGE_SIZE,currentPage*PAGE_SIZE);visiblePageIds=pageGames.map(game=>game.id);$('gamesGrid').innerHTML=pageGames.map(gameCard).join('');$('reviewPanel').hidden=!pageGames.length;$('markSeen').disabled=reviewSaving||pendingPlayed.size>0||!visiblePageIds.some(id=>!seen.has(id));$('markSeen').textContent=reviewSaving?'Sauvegarde…':'✓ Noter comme vu';$('seenCount').textContent=`${seen.size.toLocaleString('fr')} jeu${seen.size>1?'x':''} examiné${seen.size>1?'s':''}`;$('emptyState').hidden=filtered.length>0;$('pagination').hidden=!filtered.length;$('previousPage').disabled=currentPage===1;$('nextPage').disabled=currentPage===totalPages;$('pageInfo').textContent=`Page ${currentPage} / ${totalPages}`;$('resultSummary').textContent=`${filtered.length} résultat${filtered.length!==1?'s':''} • ${pageGames.length} affiché${pageGames.length!==1?'s':''}`;$('visibleCount').textContent=pageGames.length;$('totalCount').textContent=catalog.length;$('playedCount').textContent=played.size;const percent=catalog.length?Math.round(played.size/catalog.length*100):0;$('completionPercent').textContent=percent+'%';$('completionBar').style.width=Math.min(percent,100)+'%'}
+
+function showPlayedGames(){
+  if(!currentUser||!inventoryReady)return;
+  $('filters').reset();
+  $('statusFilter').value='played';
+  $('showSeen').checked=true;
+  currentPage=1;
+  render();
+  $('catalogue').scrollIntoView();
+}
 
 async function loadCloudPlayedGames(user,epoch){
   const snapshot=await getDocs(collection(db,'users',user.uid,'playedGames'));
@@ -128,6 +139,7 @@ $('gamesGrid').addEventListener('change',async event=>{
 $('gamesGrid').addEventListener('click',event=>{const button=event.target.closest('[data-details-id]');if(button)openGameDetails(button.dataset.detailsId)});
 ['searchInput','genreFilter','platformFilter','yearFilter','statusFilter','sortFilter'].forEach(id=>$(id).addEventListener('input',()=>{currentPage=1;render()}));
 $('showSeen').addEventListener('change',()=>{currentPage=1;render()});
+$('playedGamesFilter').addEventListener('click',showPlayedGames);
 $('markSeen').addEventListener('click',markPageSeen);
 $('filters').addEventListener('submit',event=>event.preventDefault());
 $('previousPage').addEventListener('click',()=>{if(currentPage>1){currentPage-=1;render();$('catalogue').scrollIntoView()}});

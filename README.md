@@ -29,7 +29,7 @@ Les données et images du catalogue sont fournies par [RAWG](https://rawg.io/).
 
 ## Parcourir son historique
 
-Le catalogue affiche 30 jeux par page. « Noter comme vu » enregistre uniquement les jeux affichés, puis les masque par défaut. « Afficher jeux déjà vus » permet de les retrouver. Le compteur des jeux joués est indépendant.
+Le catalogue affiche 32 jeux par page. « Noter comme vu » enregistre uniquement les jeux affichés, puis les masque par défaut. « Afficher jeux déjà vus » permet de les retrouver. Le compteur des jeux joués est cliquable et affiche tous les jeux joués, y compris ceux déjà examinés.
 
 Les marqueurs de lecture sont des documents `seen--{gameId}` de type `kind: "seen"` dans la même sous-collection privée que les anciens jeux joués, pour rester compatibles avec les règles Firestore déjà publiées. Ils ne contribuent jamais au compteur joué. La page est masquée uniquement après confirmation du batch Firestore. Les lectures et écritures en cours sont isolées lors d'un changement de compte.
 
